@@ -64,6 +64,6 @@ class User extends Authenticatable
 
     public function supplyDemand()
     {
-        return $this->belongsTo(SupplyDemand::class);
+        return $this->hasMany(SupplyDemand::class);
     }
 }

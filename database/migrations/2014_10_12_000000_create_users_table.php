@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-            $table->string('phone');
+            $table->string('phone')->unique();
             $table->string('address')->nullable();
             $table->enum('type', ['Farmer', 'Consumer'])->default('Farmer');
             $table->enum('status', ['Active', 'Under Review', 'Suspended', 'Banned'])->default('Active');

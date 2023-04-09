@@ -7,8 +7,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Validation\ValidationException;
+use App\Models\SupplyDemand;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
 {
@@ -36,19 +36,19 @@ class UserController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-            'email' => 'required|email',
-            'password' => 'required'
+            'phone' => 'required',
+            'password' => 'required|string'
         ]);
 
-        $user = User::where('email', $request->email)->first();
+        $user = User::where('phone', $request->phone)->first();
 
         if(!$user || !Hash::check($request->password, $user->password)){
             throw ValidationException::withMessages([
-                'email' => 'The Provided Credentials Are Incorrect.'
+                'phone' => 'The Provided Credentials Are Incorrect.'
             ]);
         }
 
-        return $user->createToken($request->email)->plainTextToken;
+        return $user->createToken($user->email)->plainTextToken;
 
     }
 
@@ -63,7 +63,7 @@ class UserController extends Controller
         $request->validate([
             'email' => 'required|email|unique:users|max:255',
             'password' => 'required|string|min:8',
-            'phone' => 'required|string|max:15',
+            'phone' => 'required|phone|unique:users|max:12',
             'name' => 'required|string|min:5',
             'type' => 'required|string',
             'address' => 'required|string'
@@ -80,9 +80,16 @@ class UserController extends Controller
 
         $user->save();
 
-        return $user;
+//       	$supplyDemand = SupplyDemand::create([
+//            'user_id' => $user->id,
+//            'supply_demands' => "Not Available",
+//        ]);
+//      	$supplyDemand->save();
+
+      return $user;
 
     }
+
 
     public function getUsers()
         {
@@ -99,5 +106,7 @@ class UserController extends Controller
                 return response()->json(['users' => $farmers]);
             }
         }
+
+
 
     }
